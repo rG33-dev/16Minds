@@ -5,21 +5,24 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.whu.domain.CalculatePersonalityUseCase
 import com.example.whu.model.PersonalityResult
 import com.example.whu.model.Question
 import com.example.whu.repository.QuestionRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Personality Test app.
- * SRP: Manages the state of the quiz, including pagination and scoring.
+ * Manages state including welcome and instruction phases.
  */
 class PersonalityViewModel(
     private val repository: QuestionRepository,
     private val calculatePersonalityUseCase: CalculatePersonalityUseCase
 ) : ViewModel() {
 
-    private val _currentScreen = mutableStateOf("home")
+    private val _currentScreen = mutableStateOf("welcome")
     val currentScreen: State<String> = _currentScreen
 
     private val _currentPage = mutableIntStateOf(0)
@@ -36,6 +39,14 @@ class PersonalityViewModel(
 
     private val pageSize = 5
 
+    fun startToInstructions() {
+        _currentScreen.value = "instructions"
+    }
+
+    fun startQuiz() {
+        _currentScreen.value = "home"
+    }
+
     fun updateAnswer(questionId: Int, score: Int) {
         _answers[questionId] = score
     }
@@ -45,32 +56,39 @@ class PersonalityViewModel(
         if (_currentPage.intValue < totalPages - 1) {
             _currentPage.intValue++
         } else {
-            finishQuiz()
+            processResults()
         }
     }
 
     fun previousPage() {
         if (_currentPage.intValue > 0) {
             _currentPage.intValue--
+        } else {
+            _currentScreen.value = "instructions"
         }
     }
 
-    private fun finishQuiz() {
-        // Ensure all questions have a default answer (5) if not explicitly set
-        questions.value.forEach { q ->
-            if (!_answers.containsKey(q.id)) {
-                _answers[q.id] = 5
+    private fun processResults() {
+        viewModelScope.launch {
+            _currentScreen.value = "loading"
+            delay(2500)
+            
+            questions.value.forEach { q ->
+                if (!_answers.containsKey(q.id)) {
+                    _answers[q.id] = 5
+                }
             }
+            
+            _result.value = calculatePersonalityUseCase.execute(_questions.value, _answers)
+            _currentScreen.value = "result"
         }
-        _result.value = calculatePersonalityUseCase.execute(_questions.value, _answers)
-        _currentScreen.value = "result"
     }
 
     fun resetQuiz() {
         _answers.clear()
         _currentPage.intValue = 0
         _result.value = null
-        _currentScreen.value = "home"
+        _currentScreen.value = "welcome"
     }
 
     fun getQuestionsForCurrentPage(): List<Question> {

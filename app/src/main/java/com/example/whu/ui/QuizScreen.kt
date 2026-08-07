@@ -47,7 +47,7 @@ fun QuizScreen(
                 .fillMaxWidth()
                 .height(16.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            color = GrassGreen,
+            color =GrassGreen,
             trackColor = GrassGreen.copy(alpha = 0.2f)
         )
         

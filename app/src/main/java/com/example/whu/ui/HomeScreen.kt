@@ -1,17 +1,23 @@
 package com.example.whu.ui
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,8 +27,7 @@ import com.example.whu.model.Question
 import com.example.whu.ui.theme.*
 
 /**
- * HomeScreen displays questions in chunks of 5 using a LazyColumn.
- * This adheres to the user's request for pagination on the home screen.
+ * HomeScreen: A premium, paginated quiz screen designed with a mobile-first centered feel.
  */
 @Composable
 fun HomeScreen(
@@ -35,94 +40,117 @@ fun HomeScreen(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    val progress = ((pageIndex + 1) * 5).coerceAtMost(totalQuestions).toFloat() / totalQuestions
+    val progress by animateFloatAsState(
+        targetValue = ((pageIndex + 1) * 5).coerceAtMost(totalQuestions).toFloat() / totalQuestions,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "progress"
+    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        // Joyous Animated Header
         Text(
-            text = "🌟 Personality Magic 🌟",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Black,
-            color = PlayfulPink,
+            text = "✨ Discovery Time! ✨",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Black,
+                letterSpacing = 1.sp
+            ),
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            color = GrassGreen,
-            trackColor = GrassGreen.copy(alpha = 0.2f)
-        )
-        
-        Text(
-            text = "Step ${pageIndex + 1} of ${(totalQuestions + 4) / 5}",
-            modifier = Modifier.padding(top = 8.dp),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = GrassGreen
-        )
+        Spacer(modifier = Modifier.height(24.dp))
 
+        // Modern Progress Indicator
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(
+                            Brush.horizontalGradient(listOf(JoyLightSecondary, SuccessGreen))
+                        )
+                )
+            }
+            Text(
+                text = "${(progress * 100).toInt()}% Journey Completed",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
+        // Questions List
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(questions) { question ->
-                QuestionCard(
+            itemsIndexed(questions, key = { _, item -> item.id }) { index, question ->
+                ModernQuestionCard(
                     question = question,
                     answer = answers[question.id] ?: 5,
-                    onAnswerChange = { onAnswerChange(question.id, it) }
+                    onAnswerChange = { onAnswerChange(question.id, it) },
+                    index = index
                 )
             }
         }
 
+        // Navigation Controls
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .padding(vertical = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (pageIndex > 0) {
                 FilledIconButton(
                     onClick = onBack,
-                    modifier = Modifier.size(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = SkyBlue)
+                    modifier = Modifier
+                        .size(64.dp)
+                        .shadow(4.dp, RoundedCornerShape(20.dp)),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(28.dp))
                 }
-            } else {
-                Spacer(modifier = Modifier.size(56.dp))
             }
 
             Button(
                 onClick = onNext,
                 modifier = Modifier
-                    .height(56.dp)
+                    .height(64.dp)
                     .weight(1f)
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = SkyBlue),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                    .shadow(8.dp, RoundedCornerShape(20.dp)),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = JoyLightPrimary),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
                 Text(
-                    text = if (!isLastPage) "Next Magic! ✨" else "Show Result! 🌈",
+                    text = if (!isLastPage) "Next Adventure! 🚀" else "Show My Magic! 🌈",
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.ExtraBold
                 )
                 if (!isLastPage) {
                     Spacer(modifier = Modifier.width(8.dp))
@@ -134,57 +162,65 @@ fun HomeScreen(
 }
 
 @Composable
-fun QuestionCard(
+fun ModernQuestionCard(
     question: Question,
     answer: Int,
-    onAnswerChange: (Int) -> Unit
+    onAnswerChange: (Int) -> Unit,
+    index: Int
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { visible = true }
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn(animationSpec = tween(600, delayMillis = index * 100))
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(6.dp, RoundedCornerShape(32.dp)),
+            shape = RoundedCornerShape(32.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
-            Text(
-                text = question.text,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                color = BrightPurple,
-                lineHeight = 24.sp
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "My Score: $answer",
-                style = MaterialTheme.typography.titleMedium,
-                color = SkyBlue,
-                fontWeight = FontWeight.ExtraBold
-            )
-            
-            Slider(
-                value = answer.toFloat(),
-                onValueChange = { onAnswerChange(it.toInt()) },
-                valueRange = 1f..10f,
-                steps = 8,
-                colors = SliderDefaults.colors(
-                    thumbColor = SoftOrange,
-                    activeTrackColor = SoftOrange,
-                    inactiveTrackColor = SoftOrange.copy(alpha = 0.24f)
-                )
-            )
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Not at all 🙊", fontSize = 10.sp, color = CandyRed, fontWeight = FontWeight.Bold)
-                Text("Totally! 🦁", fontSize = 10.sp, color = GrassGreen, fontWeight = FontWeight.Bold)
+                Text(
+                    text = question.text,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, lineHeight = 26.sp),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                Text(
+                    text = "$answer",
+                    style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Black),
+                    color = MagicPurple
+                )
+
+                Slider(
+                    value = answer.toFloat(),
+                    onValueChange = { onAnswerChange(it.toInt()) },
+                    valueRange = 1f..10f,
+                    steps = 8,
+                    colors = SliderDefaults.colors(
+                        thumbColor = EnergyOrange,
+                        activeTrackColor = EnergyOrange,
+                        inactiveTrackColor = EnergyOrange.copy(alpha = 0.2f)
+                    ),
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("Nope 🙊", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = ErrorRed)
+                    Text("YES! 🦁", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = SuccessGreen)
+                }
             }
         }
     }
