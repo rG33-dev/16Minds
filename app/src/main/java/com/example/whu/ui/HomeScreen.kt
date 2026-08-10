@@ -3,7 +3,6 @@ package com.example.whu.ui
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -18,17 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.whu.model.Question
+import com.example.whu.Question
 import com.example.whu.ui.theme.*
 
-/**
- * HomeScreen: A premium, paginated quiz screen for 16minds.
- */
 @Composable
 fun HomeScreen(
     questions: List<Question>,
@@ -54,7 +49,6 @@ fun HomeScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Updated branding header
         Text(
             text = "✨ 16minds ✨",
             style = MaterialTheme.typography.headlineMedium.copy(
@@ -67,7 +61,6 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Modern Progress Indicator
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
                 modifier = Modifier
@@ -94,7 +87,6 @@ fun HomeScreen(
             )
         }
 
-        // Questions List
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -113,7 +105,6 @@ fun HomeScreen(
             }
         }
 
-        // Navigation Controls
         Row(
             modifier = Modifier
                 .fillMaxWidth()

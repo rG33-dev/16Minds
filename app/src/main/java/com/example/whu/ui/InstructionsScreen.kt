@@ -2,7 +2,6 @@ package com.example.whu.ui
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,13 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whu.ui.theme.*
 
-/**
- * InstructionsScreen: Branded for 16minds with playful entrance animations.
- */
 @Composable
 fun InstructionsScreen(onStart: () -> Unit) {
     val scrollState = rememberScrollState()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +34,6 @@ fun InstructionsScreen(onStart: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(32.dp))
-
         Text(
             text = "How to Play! 🎮",
             style = MaterialTheme.typography.headlineLarge.copy(
@@ -48,9 +42,7 @@ fun InstructionsScreen(onStart: () -> Unit) {
             ),
             color = JoyLightPrimary
         )
-
         Spacer(modifier = Modifier.height(32.dp))
-
         InstructionCard(
             icon = Icons.Default.Face,
             title = "Be Truly You!",
@@ -58,7 +50,6 @@ fun InstructionsScreen(onStart: () -> Unit) {
             color = JoyLightSecondary,
             delay = 100
         )
-
         InstructionCard(
             icon = Icons.Default.CheckCircle,
             title = "Slide to Score",
@@ -66,7 +57,6 @@ fun InstructionsScreen(onStart: () -> Unit) {
             color = MagicPurple,
             delay = 300
         )
-
         InstructionCard(
             icon = Icons.Default.Star,
             title = "Unlock Your Mind",
@@ -74,10 +64,8 @@ fun InstructionsScreen(onStart: () -> Unit) {
             color = JoyLightTertiary,
             delay = 500
         )
-
         Spacer(modifier = Modifier.weight(1f))
         Spacer(modifier = Modifier.height(48.dp))
-
         Button(
             onClick = onStart,
             modifier = Modifier
@@ -96,7 +84,6 @@ fun InstructionsScreen(onStart: () -> Unit) {
                 fontWeight = FontWeight.Black
             )
         }
-        
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
@@ -113,7 +100,6 @@ fun InstructionCard(
     LaunchedEffect(Unit) {
         visible = true
     }
-
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(tween(600, delayMillis = delay)) + slideInHorizontally(
@@ -145,9 +131,7 @@ fun InstructionCard(
                         modifier = Modifier.padding(12.dp).size(32.dp)
                     )
                 }
-                
                 Spacer(modifier = Modifier.width(20.dp))
-                
                 Column {
                     Text(
                         text = title,

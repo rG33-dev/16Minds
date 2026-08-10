@@ -30,7 +30,6 @@ import kotlinx.coroutines.delay
 fun WelcomeScreen(onContinue: () -> Unit) {
     var startAnimation by remember { mutableStateOf(false) }
     val bounceScale = remember { Animatable(0f) }
-
     LaunchedEffect(key1 = true) {
         startAnimation = true
         bounceScale.animateTo(
@@ -40,7 +39,6 @@ fun WelcomeScreen(onContinue: () -> Unit) {
         delay(2000)
         onContinue()
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,9 +67,7 @@ fun WelcomeScreen(onContinue: () -> Unit) {
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(40.dp))
-
         Text(
             text = "Welcome to\n16minds",
             style = MaterialTheme.typography.displayMedium.copy(

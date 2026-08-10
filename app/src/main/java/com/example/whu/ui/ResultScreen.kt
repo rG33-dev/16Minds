@@ -1,7 +1,9 @@
 package com.example.whu.ui
 
+import android.content.Intent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -10,33 +12,29 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.*
 import com.example.whu.R
-import com.example.whu.model.PersonalityResult
+import com.example.whu.PersonalityResult
 import com.example.whu.ui.theme.*
 
-/**
- * ResultScreen displays the magic personality outcome.
- * It is aligned in a central column for a mobile feel and features a joyous Lottie animation.
- */
 @Composable
 fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
     if (result == null) return
 
+    val context = LocalContext.current
     val backgroundBrush = if (isSystemInDarkTheme()) {
         Brush.verticalGradient(BackgroundGradientDark)
     } else {
@@ -61,10 +59,7 @@ fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
             Spacer(modifier = Modifier.statusBarsPadding())
             Spacer(modifier = Modifier.height(40.dp))
 
-            // --- ANIMATION SPACE ---
-            // Replaced the Star Icon with the Lottie 'search' animation
             ResultAnimationPlaceholder(result.mbtiType)
-            // ------------------------
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -80,7 +75,6 @@ fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Primary Identity Card
             ResultSectionCard(delay = 150) {
                 Column(
                     modifier = Modifier
@@ -114,7 +108,6 @@ fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Jungian Insight Card
             ResultSectionCard(delay = 300) {
                 Column(modifier = Modifier.padding(28.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -142,7 +135,6 @@ fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Descriptive Card
             ResultSectionCard(delay = 450) {
                 Box(
                     modifier = Modifier
@@ -163,7 +155,35 @@ fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Action Button
+            OutlinedButton(
+                onClick = {
+                    val shareText = "I just unlocked my magic! I'm an ${result.mbtiType} - The ${result.nickname}.\n\n${result.description}"
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, "Share your result")
+                    context.startActivity(shareIntent)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(68.dp),
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(2.dp, MagicPurple),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MagicPurple)
+            ) {
+                Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(28.dp))
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    "SHARE MY MAGIC",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Button(
                 onClick = onReset,
                 modifier = Modifier
@@ -191,9 +211,6 @@ fun ResultScreen(result: PersonalityResult?, onReset: () -> Unit) {
     }
 }
 
-/**
- * Plays the 'search' Lottie animation as requested.
- */
 @Composable
 fun ResultAnimationPlaceholder(type: String) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.search))
@@ -252,22 +269,6 @@ fun ResultSectionCard(
                 containerColor = MaterialTheme.colorScheme.surface
             ),
             content = { content() }
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun ResultPreview() {
-    WhuTheme {
-        ResultScreen(
-            result = PersonalityResult(
-                mbtiType = "ENFP",
-                jungType = "Extraverted Intuition",
-                nickname = "Sparkling Dreamer",
-                description = "You are full of energy and magic!"
-            ),
-            onReset = {}
         )
     }
 }

@@ -12,12 +12,8 @@ import com.example.whu.ui.InstructionsScreen
 import com.example.whu.ui.LoadingScreen
 import com.example.whu.ui.ResultScreen
 import com.example.whu.ui.WelcomeScreen
-import com.example.whu.viewmodel.PersonalityViewModel
+import com.example.whu.PersonalityViewModel
 
-/**
- * Navigation Container for the Personality Magic App.
- * Orchestrates transitions between Welcome, Instructions, Quiz (Home), Loading, and Result screens.
- */
 @Composable
 fun PersonalityAppContainer(viewModel: PersonalityViewModel) {
     val currentScreen by viewModel.currentScreen
