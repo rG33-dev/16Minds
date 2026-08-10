@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whu.ui.theme.*
 
+/**
+ * InstructionsScreen: Branded for 16minds with playful entrance animations.
+ */
 @Composable
 fun InstructionsScreen(onStart: () -> Unit) {
     val scrollState = rememberScrollState()
@@ -48,25 +52,25 @@ fun InstructionsScreen(onStart: () -> Unit) {
         Spacer(modifier = Modifier.height(32.dp))
 
         InstructionCard(
-            icon = Icons.Default.Star,
-            title = "Be Yourself!",
-            description = "There are no wrong answers! Just pick what feels most like you.",
+            icon = Icons.Default.Face,
+            title = "Be Truly You!",
+            description = "16minds wants to know the real you! Pick answers that feel most like you.",
             color = JoyLightSecondary,
             delay = 100
         )
 
         InstructionCard(
             icon = Icons.Default.CheckCircle,
-            title = "Slide the Magic Bar",
-            description = "1 means 'Not at all' and 10 means 'Totally Me!'",
+            title = "Slide to Score",
+            description = "Slide the bar from 1 to 10. 10 is 'Super Like Me!'",
             color = MagicPurple,
             delay = 300
         )
 
         InstructionCard(
             icon = Icons.Default.Star,
-            title = "Unlock Superpowers",
-            description = "At the end, you'll see your secret personality type and magic nickname!",
+            title = "Unlock Your Mind",
+            description = "At the end, your 16minds secret type and special nickname will appear!",
             color = JoyLightTertiary,
             delay = 500
         )
@@ -87,7 +91,7 @@ fun InstructionsScreen(onStart: () -> Unit) {
             )
         ) {
             Text(
-                text = "I'M READY! 🚀",
+                text = "LET'S DISCOVER! 🚀",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Black
             )

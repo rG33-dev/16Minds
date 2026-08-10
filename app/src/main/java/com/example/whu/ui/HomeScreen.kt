@@ -27,7 +27,7 @@ import com.example.whu.model.Question
 import com.example.whu.ui.theme.*
 
 /**
- * HomeScreen: A premium, paginated quiz screen designed with a mobile-first centered feel.
+ * HomeScreen: A premium, paginated quiz screen for 16minds.
  */
 @Composable
 fun HomeScreen(
@@ -54,9 +54,9 @@ fun HomeScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Joyous Animated Header
+        // Updated branding header
         Text(
-            text = "✨ Discovery Time! ✨",
+            text = "✨ 16minds ✨",
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Black,
                 letterSpacing = 1.sp
@@ -148,7 +148,7 @@ fun HomeScreen(
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
                 Text(
-                    text = if (!isLastPage) "Next Adventure! 🚀" else "Show My Magic! 🌈",
+                    text = if (!isLastPage) "Next Discovery! 🚀" else "Show My 16minds! 🌈",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold
                 )

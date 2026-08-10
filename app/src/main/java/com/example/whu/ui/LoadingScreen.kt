@@ -64,7 +64,7 @@ fun LoadingScreen() {
             Spacer(modifier = Modifier.height(48.dp))
             
             Text(
-                text = "Brewing your magic...",
+                text = "16minds is thinking...",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
@@ -75,7 +75,7 @@ fun LoadingScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             
             Text(
-                text = "Looking into your soul's adventure!",
+                text = "Calculating your unique magic!",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
