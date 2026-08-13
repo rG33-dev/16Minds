@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.whu.ui.theme
 
 import android.app.Activity

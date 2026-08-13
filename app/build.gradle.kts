@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.whu"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.whu"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -20,7 +20,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            shrinkResources = true
+            //shrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
